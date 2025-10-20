@@ -1,1 +1,0 @@
-{"ngram_range": [1, 2], "max_features": 5000, "min_df": 3, "best_threshold": 0.40871351957321167, "cat_columns": ["wine_category", "food_category", "cuisine"]}
