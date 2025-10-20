@@ -1,68 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wine & Food Pairing Demo</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+  <meta charset="utf-8" />
+  <title>Wine–Food Pairing (Binary) – Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f7f8fa;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px;
+    :root { --bg:#0b0e12; --card:#12161d; --text:#e7ecf3; --muted:#9fb2c8; --brand:#6dd3ff; }
+    body { margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto; background:var(--bg); color:var(--text); }
+    .wrap { max-width:900px; margin:40px auto; padding:0 16px; }
+    h1 { font-size:28px; margin:0 0 12px; }
+    p { color:var(--muted); margin:0 0 18px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .card { background:var(--card); border-radius:16px; padding:18px; box-shadow:0 6px 16px rgba(0,0,0,.25); }
+    label { display:block; font-weight:600; margin:8px 0 6px; }
+    input[type="text"], textarea, select {
+      width:100%; border-radius:12px; border:1px solid #223042; background:#0e141c; color:var(--text);
+      padding:10px 12px; outline:none; font-size:14px;
     }
-    h1 {
-      color: #333;
-    }
-    textarea, select {
-      width: 400px;
-      padding: 10px;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-    button {
-      margin-top: 20px;
-      background: #7c3aed;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 6px;
-      font-size: 15px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #6d28d9;
-    }
-    #result {
-      margin-top: 25px;
-      font-size: 16px;
-      font-weight: 600;
-      color: #444;
-    }
+    textarea { min-height:92px; }
+    button { padding:12px 16px; border:none; border-radius:12px; color:#03111a; background:var(--brand); font-weight:700; cursor:pointer; }
+    .row { display:flex; gap:12px; align-items:center; }
+    .result { font-size:20px; font-weight:700; }
+    .pill { padding:6px 10px; border-radius:999px; background:#1a2432; color:var(--brand); font-weight:700; }
+    footer { color:var(--muted); margin-top:18px; font-size:12px; }
+    .muted { color:var(--muted); }
   </style>
 </head>
 <body>
+  <div class="wrap">
+    <h1>Wine–Food Pairing (Good vs Other)</h1>
+    <p>TF-IDF → SVD из описания + one-hot категорий (wine_category, food_category, cuisine).</p>
 
-  <h1>🍷 Wine & Food Pairing Quality</h1>
+    <div class="grid">
+      <div class="card">
+        <label>Description / details</label>
+        <textarea id="desc" placeholder="e.g. spicy grilled lamb with herbs and garlic"></textarea>
 
-  <textarea id="desc" rows="4" placeholder="Describe your food and wine... (e.g., spicy Thai curry with Sauvignon Blanc)"></textarea>
+        <label>Wine category</label>
+        <select id="wine_category"></select>
 
-  <select id="cuisine">
-    <option value="">Select cuisine...</option>
-    <option>Italian</option>
-    <option>Japanese</option>
-    <option>Mexican</option>
-    <option>French</option>
-    <option>Thai</option>
-  </select>
+        <label>Food category</label>
+        <select id="food_category"></select>
 
-  <button onclick="predict()">Predict Pairing Quality</button>
+        <label>Cuisine</label>
+        <select id="cuisine"></select>
 
-  <div id="result">Model loading...</div>
+        <div style="height:10px"></div>
+        <button id="btn">Predict</button>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <div class="result" id="res">—</div>
+          <div class="pill"><span id="prob">0.00</span></div>
+        </div>
+        <p class="muted" id="details"></p>
+        <footer>Threshold: <span id="thr">—</span></footer>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
