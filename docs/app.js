@@ -10,7 +10,7 @@ async function loadAll() {
   ]);
   META = meta; VOCAB = vocab; IDF = idf; SVD = svd; OHE = ohe;
 
-  MODEL = await tf.loadLayersModel('model_tfjs/model.json');
+  MODEL = await tf.loadLayersModel('model_tfjs/model.json?v=6');
 
   const [catsWine, catsFood, catsCuisine] = OHE;
   fillSelect('wine_category', catsWine);
