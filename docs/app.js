@@ -27,14 +27,24 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<
 
 // ---- TF-IDF (sklearn-like: ngram 1..2, L2 norm) ----
 function tokenize(str) {
-  const clean = str.toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
-  const uni = clean ? clean.split(' ') : [];
+  // 1) как в sklearn: берём слова длиной ≥2 (token_pattern=r'(?u)\b\w\w+\b')
+  //    в нашем случае — латиница/цифры из датасета
+  const uni = (String(str).toLowerCase().match(/\b[a-z0-9]{2,}\b/g)) || [];
+
+  // 2) биграммы
   const bi = [];
-  for (let i=0;i+1<uni.length;i++) bi.push(uni[i]+' '+uni[i+1]);
-  const [n1,n2] = META.ngram_range || [1,1];
-  let out=[]; if(n1===1) out=out.concat(uni); if(n2>=2) out=out.concat(bi);
+  for (let i = 0; i + 1 < uni.length; i++) {
+    bi.push(uni[i] + ' ' + uni[i + 1]);
+  }
+
+  // 3) собрать список токенов по диапазону n-грамм из META
+  const [n1, n2] = META.ngram_range || [1, 1];
+  let out = [];
+  if (n1 === 1) out = out.concat(uni);
+  if (n2 >= 2) out = out.concat(bi);
   return out;
 }
+
 function tfidfVector(text) {
   const nFeatures = Object.keys(VOCAB).length;
   const vec = new Float32Array(nFeatures);
